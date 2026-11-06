@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Lease Agreement PDF" icon-name="doctype:pdf">
+        <div class="slds-p-horizontal_medium">
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                Generate the agreement as a PDF from the current record values. "Send to Tenant" also saves a copy under Files.
+            </p>
+            <div class="slds-grid slds-wrap slds-gutters_x-small">
+                <div class="slds-col">
+                    <lightning-button
+                        variant="neutral"
+                        label="Download PDF"
+                        icon-name="utility:download"
+                        stretch
+                        disabled={disabled}
+                        onclick={handleDownload}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col">
+                    <lightning-button
+                        variant="brand"
+                        label="Send to Tenant"
+                        icon-name="utility:email"
+                        stretch
+                        disabled={disabled}
+                        onclick={handleSend}>
+                    </lightning-button>
+                </div>
+            </div>
+            <template lwc:if={busy}>
+                <div class="slds-is-relative slds-m-top_medium" style="height: 2rem;">
+                    <lightning-spinner alternative-text="Working" size="small"></lightning-spinner>
+                </div>
+            </template>
+            <template lwc:if={error}>
+                <div class="slds-text-color_error slds-m-top_small" role="alert">{error}</div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

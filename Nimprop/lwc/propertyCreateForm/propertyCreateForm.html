@@ -1,0 +1,85 @@
+<template>
+    <lightning-card title="New Property" icon-name="custom:custom24">
+        <div class="slds-p-horizontal_medium">
+            <lightning-record-edit-form
+                object-api-name="Property__c"
+                onsubmit={handleSubmit}
+                onsuccess={handleSuccess}
+                onerror={handleError}>
+                <lightning-messages></lightning-messages>
+
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input-field field-name="Name" required></lightning-input-field>
+                        <lightning-input-field field-name="Type__c"></lightning-input-field>
+                        <lightning-input-field field-name="Furnishing_Status__c"></lightning-input-field>
+                        <lightning-input-field field-name="Status__c"></lightning-input-field>
+                        <lightning-input-field field-name="Rent__c"></lightning-input-field>
+                        <lightning-input-field field-name="Current_Tenant__c"></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input-field field-name="Street__c"></lightning-input-field>
+                        <lightning-input-field field-name="City__c"></lightning-input-field>
+                        <lightning-input-field field-name="State__c"></lightning-input-field>
+                        <lightning-input-field field-name="Postal_Code__c"></lightning-input-field>
+                        <lightning-input-field field-name="Country__c"></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input-field field-name="Description__c" required></lightning-input-field>
+                    </div>
+                </div>
+
+                <div class="slds-form-element slds-m-top_medium" role="group" aria-labelledby="images-label">
+                    <span id="images-label" class="slds-form-element__label">
+                        <abbr class="slds-required" title="required">*</abbr> Property Images
+                    </span>
+                    <lightning-input
+                        type="file"
+                        label="Property Images"
+                        variant="label-hidden"
+                        accept={acceptedFormats}
+                        multiple
+                        disabled={saving}
+                        onchange={handleFilesChange}>
+                    </lightning-input>
+                    <div class="slds-form-element__help">{fileHelpText}</div>
+
+                    <template lwc:if={hasFiles}>
+                        <ul class="slds-list_dotted slds-m-top_x-small" aria-label="Selected files">
+                            <template for:each={fileRows} for:item="f">
+                                <li key={f.name} class="slds-m-bottom_xx-small">
+                                    <lightning-icon icon-name="doctype:image" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+                                    {f.label}
+                                    <lightning-button-icon
+                                        icon-name="utility:close"
+                                        alternative-text={f.name}
+                                        title="Remove"
+                                        variant="bare"
+                                        size="small"
+                                        class="slds-m-left_x-small"
+                                        data-name={f.name}
+                                        disabled={saving}
+                                        onclick={handleRemoveFile}>
+                                    </lightning-button-icon>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+
+                    <template lwc:if={fileError}>
+                        <div class="slds-text-color_error slds-m-top_x-small" role="alert">{fileError}</div>
+                    </template>
+                </div>
+
+                <div class="slds-m-top_medium slds-grid slds-grid_align-end slds-grid_vertical-align-center">
+                    <template lwc:if={saving}>
+                        <span class="slds-m-right_small slds-text-color_weak">{progressLabel}</span>
+                        <lightning-spinner alternative-text="Saving" size="small" variant="brand" class="slds-is-relative slds-m-right_small"></lightning-spinner>
+                    </template>
+                    <lightning-button label="Cancel" onclick={handleCancel} disabled={saving} class="slds-m-right_x-small"></lightning-button>
+                    <lightning-button variant="brand" type="submit" label="Save" disabled={saving}></lightning-button>
+                </div>
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+</template>

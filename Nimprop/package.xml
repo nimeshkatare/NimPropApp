@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GeocodingHttpMock</members>
+        <members>GeocodingService</members>
+        <members>GeocodingServiceTest</members>
+        <members>LeaseAgreementPdfController</members>
+        <members>LeaseAgreementPdfControllerTest</members>
+        <members>LeaseExpiryReminderBatch</members>
+        <members>LeaseExpiryReminderBatchTest</members>
+        <members>LeaseExpiryReminderScheduler</members>
+        <members>ListandSet</members>
+        <members>MaintenanceRequestTriggerHandler</members>
+        <members>MaintenanceRequestTriggerHandlerTest</members>
+        <members>MathCalculator</members>
+        <members>PropertyFileController</members>
+        <members>PropertyFileControllerTest</members>
+        <members>PropertyListController</members>
+        <members>PropertyListControllerTest</members>
+        <members>PropertyTriggerHandler</members>
+        <members>PropertyTriggerHandlerTest</members>
+        <members>REMSException</members>
+        <members>REMS_EmailUtil</members>
+        <members>REMS_TestDataFactory</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>MaintenanceRequestTrigger</members>
+        <members>PropertyTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>Geocoding_Setting.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>Lease_Agreement__c</members>
+        <members>Maintenance_Request__c</members>
+        <members>Property__c</members>
+        <members>Tenant__c</members>
+        <members>Vendor__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Geocoding_Setting__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Geocoding_Setting__mdt-Geocoding Setting Layout</members>
+        <members>Lease_Agreement__c-Lease Agreement Layout</members>
+        <members>Maintenance_Request__c-Maintenance Request Layout</members>
+        <members>Property__c-Property Layout</members>
+        <members>Tenant__c-Tenant Layout</members>
+        <members>Vendor__c-Vendor Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>leaseAgreementActions</members>
+        <members>propertyCreateForm</members>
+        <members>propertyExplorer</members>
+        <members>propertyMap</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>68.0</version>
+</Package>
