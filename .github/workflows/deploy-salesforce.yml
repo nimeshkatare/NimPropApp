@@ -1,0 +1,59 @@
+name: Deploy Salesforce DX to Developer Edition
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: Run local Apex tests during deployment
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Authenticate and deploy Salesforce source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate to Salesforce Developer Edition
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SFDX_AUTH_URL" ]; then
+            echo "::error::Missing repository secret SFDX_AUTH_URL"
+            exit 1
+          fi
+          printf '%s' "$SFDX_AUTH_URL" | sf org login sfdx-url --sfdx-url-stdin --alias NimPropOrg
+          sf org display --target-org NimPropOrg
+
+      - name: Deploy source and run Apex tests
+        if: inputs.run_tests
+        run: |
+          sf project deploy start \
+            --source-dir force-app/main/default \
+            --target-org NimPropOrg \
+            --test-level RunLocalTests \
+            --wait 60
+
+      - name: Deploy source without running Apex tests (not recommended)
+        if: ${{ !inputs.run_tests }}
+        run: |
+          sf project deploy start \
+            --source-dir force-app/main/default \
+            --target-org NimPropOrg \
+            --test-level NoTestRun \
+            --wait 60
