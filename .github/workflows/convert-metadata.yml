@@ -44,7 +44,7 @@ jobs:
           sf project convert mdapi \
             --root-dir Nimprop \
             --manifest Nimprop/package.xml \
-            --output-dir force-app/main/default
+            --output-dir force-app
 
           test -d force-app/main/default/classes
           test -d force-app/main/default/objects
