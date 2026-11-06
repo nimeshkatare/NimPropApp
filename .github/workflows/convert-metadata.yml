@@ -1,0 +1,69 @@
+name: Convert Metadata API to Salesforce DX
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Nimprop/**"
+      - "Nimprop/package.xml"
+      - "sfdx-project.json"
+      - ".github/workflows/convert-metadata.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: metadata-conversion-main
+  cancel-in-progress: false
+
+jobs:
+  convert:
+    name: Convert and commit Salesforce DX source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Convert retrieved metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf force-app/main/default
+          sf project convert mdapi \
+            --root-dir Nimprop \
+            --manifest Nimprop/package.xml \
+            --output-dir force-app/main/default
+
+          test -d force-app/main/default/classes
+          test -d force-app/main/default/objects
+          test -d force-app/main/default/lwc
+          test -n "$(find force-app/main/default -type f -print -quit)"
+
+          echo "Converted source files:"
+          find force-app/main/default -type f | sort
+
+      - name: Commit generated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add force-app
+          if git diff --cached --quiet; then
+            echo "No generated source changes to commit."
+          else
+            git commit -m "Build Salesforce DX source from Metadata API metadata"
+            git push origin HEAD:main
+          fi
