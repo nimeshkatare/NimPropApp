@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description_Required</fullName>
+    <active>true</active>
+    <description>REMS-PM-001: Description is mandatory (long text areas cannot be marked required at field level).</description>
+    <errorConditionFormula>ISBLANK(Description__c)</errorConditionFormula>
+    <errorDisplayField>Description__c</errorDisplayField>
+    <errorMessage>Description is required.</errorMessage>
+</ValidationRule>

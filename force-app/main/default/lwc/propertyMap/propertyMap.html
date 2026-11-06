@@ -1,0 +1,23 @@
+<template>
+    <lightning-card title="Location" icon-name="utility:location">
+        <div class="slds-p-horizontal_small">
+            <template lwc:if={errorMessage}>
+                <div class="slds-text-color_error" role="alert">{errorMessage}</div>
+            </template>
+            <template lwc:elseif={hasLocation}>
+                <lightning-map
+                    map-markers={mapMarkers}
+                    zoom-level="15"
+                    list-view="hidden"
+                    options={mapOptions}>
+                </lightning-map>
+            </template>
+            <template lwc:else>
+                <div class="slds-illustration slds-illustration_small slds-p-around_medium slds-text-align_center">
+                    <lightning-icon icon-name="utility:world" size="large" alternative-text="No location"></lightning-icon>
+                    <p class="slds-text-color_weak slds-m-top_small">{statusMessage}</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

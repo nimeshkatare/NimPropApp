@@ -1,0 +1,111 @@
+<template>
+    <lightning-card title="Property Explorer" icon-name="custom:custom24">
+        <div slot="actions">
+            <lightning-button label={mapToggleLabel} icon-name="utility:location" onclick={toggleMap} class="slds-m-right_x-small"></lightning-button>
+            <lightning-button variant="brand" label="New Property" icon-name="utility:add" onclick={openCreateModal}></lightning-button>
+        </div>
+
+        <!-- Filters -->
+        <div class="slds-p-horizontal_medium">
+            <div class="slds-grid slds-wrap slds-gutters_x-small slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-12">
+                    <lightning-input
+                        type="search"
+                        name="searchText"
+                        label="Search name, street or city"
+                        value={filters.searchText}
+                        onchange={handleFilterChange}
+                        onkeyup={handleSearchKey}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-12">
+                    <lightning-input type="number" name="minRent" label="Min rent" min="0" step="100" value={filters.minRent} onchange={handleFilterChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-12">
+                    <lightning-input type="number" name="maxRent" label="Max rent" min="0" step="100" value={filters.maxRent} onchange={handleFilterChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox name="status" label="Availability" value={filters.status} options={statusOptions} onchange={handleFilterChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox name="furnishing" label="Furnishing" value={filters.furnishing} options={furnishingOptions} onchange={handleFilterChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-12">
+                    <lightning-combobox name="propertyType" label="Type" value={filters.propertyType} options={typeOptions} onchange={handleFilterChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-input
+                        type="number"
+                        name="radiusKm"
+                        label="Within (km) of me"
+                        min="0.1"
+                        step="0.5"
+                        value={filters.radiusKm}
+                        disabled={radiusDisabled}
+                        onchange={handleFilterChange}>
+                    </lightning-input>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-m-top_x-small">
+                <lightning-button variant="brand" label="Apply filters" icon-name="utility:filterList" onclick={applyFilters} class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="Clear" onclick={clearFilters} class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="Use my location" icon-name="utility:checkin" onclick={handleUseMyLocation} class="slds-m-right_small"></lightning-button>
+                <template lwc:if={locationStatus}>
+                    <span class="slds-text-body_small slds-text-color_weak">{locationStatus}</span>
+                </template>
+            </div>
+        </div>
+
+        <!-- Map of current page -->
+        <template lwc:if={showMap}>
+            <div class="slds-p-horizontal_medium slds-m-top_small">
+                <template lwc:if={hasMarkers}>
+                    <lightning-map map-markers={mapMarkers} list-view="hidden" onmarkerselect={handleMarkerSelect}></lightning-map>
+                </template>
+                <template lwc:else>
+                    <p class="slds-text-color_weak slds-p-around_small">No geocoded properties on this page.</p>
+                </template>
+            </div>
+        </template>
+
+        <!-- Results -->
+        <div class="slds-m-top_small slds-is-relative">
+            <template lwc:if={loading}>
+                <lightning-spinner alternative-text="Loading properties" size="medium"></lightning-spinner>
+            </template>
+            <template lwc:if={error}>
+                <div class="slds-p-horizontal_medium slds-text-color_error" role="alert">{error}</div>
+            </template>
+            <lightning-datatable
+                key-field="id"
+                data={rows}
+                columns={columns}
+                hide-checkbox-column
+                show-row-number-column
+                column-widths-mode="auto">
+            </lightning-datatable>
+        </div>
+
+        <!-- Pagination -->
+        <div slot="footer" class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+            <span class="slds-text-body_small">{pageSummary}</span>
+            <div>
+                <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={previousPage} disabled={isFirstPage} class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={nextPage} disabled={isLastPage}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+
+    <!-- Create modal -->
+    <template lwc:if={showCreateModal}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-label="New Property" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around_none">
+                    <c-property-create-form onsuccess={handleCreated} oncancel={closeCreateModal}></c-property-create-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
